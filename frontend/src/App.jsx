@@ -4,6 +4,7 @@ import GameDetail from "./pages/GameDetail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
+import Checkout from "./pages/Checkout";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/history" element={<History />} />
+        <Route path="/checkout/:id" element={<Checkout />} />
       </Routes>
     </BrowserRouter>
   );
