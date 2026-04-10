@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const gameRoutes = require("./routes/gameRoutes");
 const authRoutes = require("./routes/authRoutes");
+const packageRoutes = require("./routes/packageRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 
@@ -14,6 +16,8 @@ app.get("/", (req, res) => {
 
 app.use("/api", gameRoutes);
 app.use("/api", authRoutes);
+app.use("/api", packageRoutes);
+app.use("/api", orderRoutes);
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
