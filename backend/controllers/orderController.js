@@ -185,3 +185,23 @@ exports.getUserOrders = (req, res) => {
     });
 
 };
+
+exports.getDashboardStats = (req, res) => {
+
+  const sql = `
+    SELECT
+      (SELECT COUNT(*) FROM users) AS total_users,
+      (SELECT COUNT(*) FROM orders) AS total_orders,
+      (SELECT IFNULL(SUM(total_price),0) FROM orders WHERE status='success') AS total_revenue
+  `;
+
+  db.query(sql, (err, result) => {
+
+    if (err) return res.status(500).json(err);
+
+    res.json(result[0]);
+
+  });
+
+};
+

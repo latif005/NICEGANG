@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const gameRoutes = require("./routes/gameRoutes");
@@ -22,3 +23,5 @@ app.use("/api", orderRoutes);
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
+
+console.log(process.env.MIDTRANS_SERVER_KEY);
