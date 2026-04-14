@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 const midtransClient = require("midtrans-client");
 
 let snap = new midtransClient.Snap({
@@ -9,4 +7,4 @@ let snap = new midtransClient.Snap({
 });
 
 module.exports = snap;
->>>>>>> f8973cf (add history page)
+
