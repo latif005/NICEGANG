@@ -7,5 +7,7 @@ router.get("/orders/:id", orderController.getOrder);
 router.post("/pay/:id", orderController.createPayment);
 router.post("/midtrans-notification", orderController.midtransNotification);
 router.get("/orders/user/:userId", orderController.getUserOrders);
+router.get("/admin/stats", orderController.getDashboardStats);
+router.get("/admin/orders", orderController.getAllOrders);
 
 module.exports = router;

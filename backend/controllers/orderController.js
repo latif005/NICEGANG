@@ -206,3 +206,27 @@ exports.getDashboardStats = (req, res) => {
 
 };
 
+exports.getAllOrders = (req, res) => {
+
+  const sql = `
+    SELECT 
+      orders.*,
+      users.username,
+      games.name AS game_name,
+      packages.amount
+    FROM orders
+    JOIN users ON users.id = orders.user_id
+    JOIN packages ON packages.id = orders.package_id
+    JOIN games ON games.id = packages.game_id
+    ORDER BY orders.created_at DESC
+  `;
+
+  db.query(sql, (err, result) => {
+
+    if (err) return res.status(500).json(err);
+
+    res.json(result);
+
+  });
+
+};
