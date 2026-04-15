@@ -24,4 +24,6 @@ app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
 
-console.log(process.env.MIDTRANS_SERVER_KEY);
+
+console.log("SERVER KEY:", process.env.MIDTRANS_SERVER_KEY);
+console.log("CLIENT KEY:", process.env.MIDTRANS_CLIENT_KEY);

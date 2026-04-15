@@ -116,7 +116,6 @@ exports.createPayment = (req, res) => {
         };
 
         try {
-
             const transaction = await snap.createTransaction(parameter);
 
             res.json({
@@ -124,9 +123,11 @@ exports.createPayment = (req, res) => {
             });
 
         } catch (error) {
+            console.error("Midtrans Error:", error);
 
-            res.status(500).json(error);
-
+            res.status(500).json({
+                message: error.message
+            });
         }
 
     });
@@ -188,20 +189,20 @@ exports.getUserOrders = (req, res) => {
 
 exports.getDashboardStats = (req, res) => {
 
-  const sql = `
+    const sql = `
     SELECT
       (SELECT COUNT(*) FROM users) AS total_users,
       (SELECT COUNT(*) FROM orders) AS total_orders,
       (SELECT IFNULL(SUM(total_price),0) FROM orders WHERE status='success') AS total_revenue
   `;
 
-  db.query(sql, (err, result) => {
+    db.query(sql, (err, result) => {
 
-    if (err) return res.status(500).json(err);
+        if (err) return res.status(500).json(err);
 
-    res.json(result[0]);
+        res.json(result[0]);
 
-  });
+    });
 
 };
 
