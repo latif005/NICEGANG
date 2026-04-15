@@ -7,6 +7,11 @@ import Navbar from "./components/Navbar";
 import Checkout from "./pages/Checkout";
 import Success from "./pages/Success";
 import History from "./pages/History";
+//admin
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ManageGames from "./pages/admin/ManageGames";
+import ManagePackages from "./pages/admin/ManagePackages";
+import ManagePromos from "./pages/admin/ManagePromos";
 
 function App() {
   return (
@@ -21,6 +26,13 @@ function App() {
         <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/success/:id" element={<Success />} />
         <Route path="/history" element={<History />} />
+
+      //admin
+      //admin
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/games" element={<ManageGames />} />
+        <Route path="/admin/packages" element={<ManagePackages />} />
+        <Route path="/admin/promos" element={<ManagePromos />} />
       </Routes>
     </BrowserRouter>
   );
