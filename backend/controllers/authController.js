@@ -41,8 +41,12 @@ exports.login = (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
+     const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role  
+      },
       SECRET,
       { expiresIn: "1d" }
     );
