@@ -15,6 +15,7 @@ function AdminSidebar() {
             <Link to="/admin/games">Games</Link><br />
             <Link to="/admin/packages">Packages</Link><br />
             <Link to="/admin/promos">Promos</Link><br />
+            <Link to="/admin/users">Users</Link>
         </div>
     );
 }
