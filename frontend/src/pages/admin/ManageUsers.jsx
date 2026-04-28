@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import API from "../../services/Api";
 import AdminSidebar from "../../components/AdminSidebar";
+import { Users, Trash2, User as UserIcon, Mail, ShieldAlert } from "lucide-react";
+import "../../App.css"; // Impor file CSS
 
 function ManageUsers() {
-
     const [users, setUsers] = useState([]);
 
     const fetchUsers = () => {
-        API.get("/users").then(res => setUsers(res.data));
+        API.get("/users")
+            .then(res => setUsers(res.data))
+            .catch(err => console.error(err));
     };
 
     useEffect(() => {
@@ -15,80 +18,118 @@ function ManageUsers() {
     }, []);
 
     const handleDelete = async (id) => {
-        if (!confirm("Yakin mau hapus user?")) return;
+        if (!window.confirm("Yakin ingin menghapus user ini secara permanen?")) return;
 
-        await API.delete(`/users/${id}`);
-        fetchUsers();
+        try {
+            await API.delete(`/users/${id}`);
+            fetchUsers();
+        } catch (error) {
+            console.error("Gagal menghapus user", error);
+            alert("Gagal menghapus user");
+        }
     };
 
     const handleRoleChange = async (id, newRole) => {
-        await API.put(`/users/${id}`, {
-            role: newRole
-        });
+        if (!window.confirm(`Yakin ingin mengubah role user ini menjadi ${newRole.toUpperCase()}?`)) return;
 
-        fetchUsers();
+        try {
+            await API.put(`/users/${id}`, {
+                role: newRole
+            });
+            fetchUsers();
+        } catch (error) {
+            console.error("Gagal mengubah role", error);
+            alert("Gagal mengubah role");
+        }
     };
 
     return (
-        <div style={{ display: "flex" }}>
+        <div className="admin-layout">
             <AdminSidebar />
 
-            <div style={{ flex: 1, padding: "30px" }}>
-                <h1>Manage Users</h1>
+            <div className="admin-content">
+                <div className="admin-header">
+                    <div>
+                        <h1 className="page-title">Manage Users</h1>
+                        <p className="page-subtitle">Kelola data pelanggan dan hak akses administrator.</p>
+                    </div>
+                </div>
 
-                <table
-                    border="1"
-                    cellPadding="10"
-                    style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        textAlign: "left"
-                    }}
-                >
-                    <thead style={{ background: "#111", color: "white" }}>
-                        <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
+                {/* Tabel Daftar User */}
+                <div className="admin-card table-card">
+                    <div className="card-header-simple">
+                        <h2><Users size={20} /> Daftar Pengguna Terdaftar</h2>
+                    </div>
+                    
+                    <div className="table-responsive">
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role Akses</th>
+                                    <th className="text-center">Aksi</th>
+                                </tr>
+                            </thead>
 
-                    <tbody>
-                        {users.map(user => (
-                            <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>{user.username}</td>
-                                <td>{user.email}</td>
+                            <tbody>
+                                {users.length > 0 ? users.map(user => (
+                                    <tr key={user.id}>
+                                        <td className="id-cell">#{user.id}</td>
+                                        
+                                        <td className="user-info-cell">
+                                            <div className="user-profile">
+                                                <div className="user-avatar">
+                                                    <UserIcon size={16} />
+                                                </div>
+                                                <span className="username-text">{user.username}</span>
+                                            </div>
+                                        </td>
 
-                                <td>
-                                    <select
-                                        value={user.role}
-                                        onChange={(e) =>
-                                            handleRoleChange(user.id, e.target.value)
-                                        }
-                                    >
-                                        <option value="user">User</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                </td>
+                                        <td>
+                                            <div className="email-flex">
+                                                <Mail size={14} className="icon-muted" />
+                                                {user.email}
+                                            </div>
+                                        </td>
 
-                                <td>
-                                    <button
-                                        style={{
-                                            background: "red",
-                                            color: "white"
-                                        }}
-                                        onClick={() => handleDelete(user.id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                        <td>
+                                            {/* Dropdown Role yang bergaya seperti Badge */}
+                                            <div className="role-select-wrapper">
+                                                {user.role === 'admin' && <ShieldAlert size={14} className="role-icon admin-icon" />}
+                                                <select
+                                                    className={`role-select ${user.role}`}
+                                                    value={user.role}
+                                                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                                                >
+                                                    <option value="user">User</option>
+                                                    <option value="admin">Admin</option>
+                                                </select>
+                                            </div>
+                                        </td>
+
+                                        <td className="action-cell text-center">
+                                            <div className="action-buttons">
+                                                <button 
+                                                    onClick={() => handleDelete(user.id)} 
+                                                    className="btn-action btn-delete" 
+                                                    title="Hapus User"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan="5" className="empty-table">Belum ada user yang terdaftar.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
             </div>
         </div>

@@ -1,194 +1,318 @@
 import { useEffect, useState } from "react";
 import API from "../../services/Api";
 import AdminSidebar from "../../components/AdminSidebar";
+import { Plus, Pencil, Trash2, Save, X, Gamepad2, Image as ImageIcon, Coins } from "lucide-react";
+import "../../App.css"; // Impor file CSS
 
 function ManageGames() {
-
-    //add
+    // State Add
     const [games, setGames] = useState([]);
     const [name, setName] = useState("");
-    const [image, setImage] = useState("");
     const [currency, setCurrency] = useState("");
 
-    //update
+    // --- YANG BERUBAH: State untuk file upload ---
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState("");
+
+    // State Update (Edit)
     const [editId, setEditId] = useState(null);
     const [editName, setEditName] = useState("");
     const [editImage, setEditImage] = useState("");
     const [editCurrency, setEditCurrency] = useState("");
 
+    const [editImageFile, setEditImageFile] = useState(null);
+    const [editPreview, setEditPreview] = useState("");
+
     const fetchGames = () => {
         API.get("/games")
-            .then(res => setGames(res.data));
+            .then(res => setGames(res.data))
+            .catch(err => console.error(err));
     };
 
     useEffect(() => {
         fetchGames();
     }, []);
 
+    const validateFile = (file) => {
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        const maxSize = 2 * 1024 * 1024; // 2MB dalam bytes
+
+        if (!validTypes.includes(file.type)) {
+            alert("Format file harus JPG atau PNG!");
+            return false;
+        }
+
+        if (file.size > maxSize) {
+            alert("File kegedean! Maksimal 2MB aja.");
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+
+            if (validateFile(file)) {
+                setImageFile(file);
+                setImagePreview(URL.createObjectURL(file));
+            } else {
+                e.target.value = "";
+                setImageFile(null);
+                setImagePreview("");
+            }
+        }
+    };
+
+    const handleEditImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        setEditImageFile(file);
+        setEditPreview(URL.createObjectURL(file)); // Biar muncul gambar barunya pas dipilih
+    }
+};
+
+    // --- YANG BERUBAH: Handle Add pakai FormData ---
     const handleAdd = async () => {
-        await API.post("/games", {
-            name,
-            image: image,
-            currency
-        });
+        if (!name || !imageFile || !currency) {
+            alert("Harap isi semua kolom dan pilih gambar!");
+            return;
+        }
 
-        setName("");
-        setImage("");
-        setCurrency("");
+        // Bungkus data pakai FormData biar file bisa dikirim
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("image", imageFile); // Kirim file fisik
+        formData.append("currency", currency);
 
-        fetchGames();
+        try {
+            await API.post("/games", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data" // Wajib untuk kirim file
+                }
+            });
+
+            // Reset Form
+            setName("");
+            setImageFile(null);
+            setImagePreview("");
+            setCurrency("");
+
+            // Kosongkan input file di HTML
+            document.getElementById('fileInput').value = '';
+
+            fetchGames();
+        } catch (error) {
+            console.error("Gagal menambah game", error);
+            alert("Gagal menambah game");
+        }
     };
 
     const handleDelete = async (id) => {
-        await API.delete(`/games/${ id}`);
-        fetchGames();
+        if (window.confirm("Yakin ingin menghapus game ini?")) {
+            try {
+                await API.delete(`/games/${id}`);
+                fetchGames();
+            } catch (error) {
+                console.error("Gagal menghapus game", error);
+            }
+        }
     };
 
     const handleEdit = (game) => {
         setEditId(game.id);
         setEditName(game.name);
-        setEditImage(game.image);
+        setEditImage(game.image); // Edit sementara tetep pakai URL teks
         setEditCurrency(game.currency);
     };
 
     const handleUpdate = async () => {
-        await API.put(`/games/${editId}`, {
-            name: editName,
-            image: editImage,
-            currency: editCurrency
-        });
+        const formData = new FormData();
+        formData.append("name", editName);
+        formData.append("currency", editCurrency);
 
-        setEditId(null);
+        // Kalau ada file baru, kirim filenya. Kalau nggak, kirim URL lama aja.
+        if (editImageFile) {
+            formData.append("image", editImageFile);
+        } else {
+            formData.append("image", editImage);
+        }
 
-        fetchGames();
+        try {
+            await API.put(`/games/${editId}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            setEditId(null);
+            setEditImageFile(null);
+            setEditPreview("");
+            fetchGames();
+            alert("Game berhasil diupdate!");
+        } catch (error) {
+            console.error("Gagal mengupdate game", error);
+            alert("Gagal mengupdate game");
+        }
     };
 
     return (
-        <div style={{ display: "flex" }}>
+        <div className="admin-layout">
             <AdminSidebar />
 
-            <div style={{ flex: 1, padding: "30px" }}>
-                <h1>Manage Games</h1>
-
-                {/* Form Add */}
-                <div style={{
-                    display: "flex",
-                    gap: "10px",
-                    marginBottom: "20px"
-                }}>
-                    <input
-                        placeholder="Nama Game"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-
-                    <input
-                        placeholder="Image URL"
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
-                    />
-
-                    <input
-                        placeholder="Currency"
-                        value={currency}
-                        onChange={(e) => setCurrency(e.target.value)}
-                    />
-
-
-                    <button onClick={handleAdd}>
-                        Tambah
-                    </button>
+            <div className="admin-content">
+                <div className="admin-header">
+                    <div>
+                        <h1 className="page-title">Manage Games</h1>
+                        <p className="page-subtitle">Kelola daftar game, gambar, dan mata uang top up.</p>
+                    </div>
                 </div>
 
-                {/* Table */}
-                <table
-                    border="1"
-                    cellPadding="10"
-                    style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        textAlign: "left"
-                    }}
-                >
-                    <thead style={{ background: "#111", color: "white" }}>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>Nama Game</th>
-                            <th>Currency</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
+                {/* Form Tambah Game */}
+                <div className="admin-card add-form-card">
+                    <h2 className="card-title"><Plus size={18} /> Tambah Game Baru</h2>
+                    <div className="form-row">
+                        <div className="input-with-icon">
+                            <Gamepad2 size={18} className="input-icon" />
+                            <input
+                                placeholder="      Nama Game"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="admin-input"
+                            />
+                        </div>
 
-                    <tbody>
-                        {games.map(game => (
-                            <tr key={game.id}>
-                                <td>{game.id}</td>
-                                <td>
-                                    {editId === game.id ? (
-                                        <input
-                                            value={editImage}
-                                            onChange={(e) => setEditImage(e.target.value)}
-                                        />
-                                    ) : (
-                                        <img
-                                            src={game.image}
-                                            width="60"
-                                            alt=""
-                                        />
-                                    )}
-                                </td>
+                        {/* --- YANG BERUBAH: Input type="file" --- */}
+                        <div className="input-with-icon">
+                            <ImageIcon size={18} className="input-icon" />
+                            <input
+                                id="fileInput"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="admin-input"
+                                style={{ padding: "9px 15px 9px 40px", cursor: "pointer" }}
+                            />
+                        </div>
 
-                                <td>
-                                    {editId === game.id ? (
-                                        <input
-                                            value={editName}
-                                            onChange={(e) => setEditName(e.target.value)}
-                                        />
-                                    ) : (
-                                        game.name
-                                    )}
-                                </td>
+                        <div className="input-with-icon">
+                            <Coins size={18} className="input-icon" />
+                            <input
+                                placeholder="      Mata Uang"
+                                value={currency}
+                                onChange={(e) => setCurrency(e.target.value)}
+                                className="admin-input"
+                            />
+                        </div>
+                        <button onClick={handleAdd} className="btn-add">
+                            <Plus size={18} /> Tambah
+                        </button>
+                    </div>
 
-                                <td>
-                                    {editId === game.id ? (
-                                        <input
-                                            value={editCurrency}
-                                            onChange={(e) => setEditCurrency(e.target.value)}
-                                        />
-                                    ) : (
-                                        game.currency
-                                    )}
-                                </td>
+                    {/* --- YANG BERUBAH: Preview gambar sebelum diupload --- */}
+                    {imagePreview && (
+                        <div style={{ marginTop: "15px" }}>
+                            <p style={{ fontSize: "12px", color: "gray", marginBottom: "8px" }}>Preview Cover:</p>
+                            <img
+                                src={imagePreview}
+                                alt="Preview"
+                                style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px", border: "2px solid #8b5cf6" }}
+                            />
+                        </div>
+                    )}
+                </div>
 
-                                <td>
-                                    {editId === game.id ? (
-                                        <>
-                                            <button onClick={handleUpdate}>
-                                                Save
-                                            </button>
+                {/* Tabel Daftar Game (Tetap sama seperti kode lu) */}
+                <div className="admin-card table-card">
+                    <div className="table-responsive">
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cover</th>
+                                    <th>Nama Game</th>
+                                    <th>Currency</th>
+                                    <th className="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {games.length > 0 ? games.map(game => (
+                                    <tr key={game.id}>
+                                        <td className="id-cell">#{game.id}</td>
 
-                                            <button onClick={() => setEditId(null)}>
-                                                Cancel
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button onClick={() => handleEdit(game)}>
-                                                Edit
-                                            </button>
+                                        {/* Kolom Image */}
+                                        <td>
+                                            {editId === game.id ? (
+                                                <div className="edit-img-container">
+                                                    <input type="file" onChange={handleEditImageChange} className="admin-input" />
+                                                    {(editPreview || editImage) && (
+                                                        <img src={editPreview || editImage} alt="preview" style={{ width: '40px', marginTop: '5px' }} />
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="game-img-preview">
+                                                    <img src={game.image} alt={game.name} />
+                                                </div>
+                                            )}
+                                        </td>
 
-                                            <button onClick={() => handleDelete(game.id)}>
-                                                Delete
-                                            </button>
-                                        </>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+                                        {/* Kolom Nama Game */}
+                                        <td className="name-cell">
+                                            {editId === game.id ? (
+                                                <input
+                                                    value={editName}
+                                                    onChange={(e) => setEditName(e.target.value)}
+                                                    className="admin-input edit-input"
+                                                />
+                                            ) : (
+                                                game.name
+                                            )}
+                                        </td>
 
-                </table>
+                                        {/* Kolom Currency */}
+                                        <td>
+                                            {editId === game.id ? (
+                                                <input
+                                                    value={editCurrency}
+                                                    onChange={(e) => setEditCurrency(e.target.value)}
+                                                    className="admin-input edit-input"
+                                                />
+                                            ) : (
+                                                <span className="currency-badge">{game.currency}</span>
+                                            )}
+                                        </td>
+
+                                        {/* Kolom Aksi */}
+                                        <td className="action-cell text-center">
+                                            {editId === game.id ? (
+                                                <div className="action-buttons">
+                                                    <button onClick={handleUpdate} className="btn-action btn-save" title="Save">
+                                                        <Save size={16} />
+                                                    </button>
+                                                    <button onClick={() => setEditId(null)} className="btn-action btn-cancel" title="Cancel">
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="action-buttons">
+                                                    <button onClick={() => handleEdit(game)} className="btn-action btn-edit" title="Edit">
+                                                        <Pencil size={16} />
+                                                    </button>
+                                                    <button onClick={() => handleDelete(game.id)} className="btn-action btn-delete" title="Delete">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan="5" className="empty-table">Belum ada game yang ditambahkan.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     );
