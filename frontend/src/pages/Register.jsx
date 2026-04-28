@@ -1,24 +1,28 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../services/Api";
+import { User, Mail, Lock, UserPlus, Gamepad2 } from "lucide-react";
+import "../App.css"; // Impor file CSS
 
 function Register() {
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault(); // Mencegah halaman reload saat form disubmit
 
     if (!username || !email || !password) {
       alert("Semua field harus diisi");
       return;
     }
 
-    try {
+    setIsLoading(true);
 
+    try {
       await API.post("/register", {
         username,
         email,
@@ -26,49 +30,86 @@ function Register() {
       });
 
       alert("Register berhasil, silakan login");
-
       navigate("/login");
 
     } catch (err) {
-
       console.error(err);
-      alert("Register gagal");
-
+      alert("Register gagal. Pastikan email belum terdaftar.");
+    } finally {
+      setIsLoading(false);
     }
-
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Register</h1>
+    <div className="auth-wrapper">
+      <div className="auth-container">
+        <div className="auth-card">
+          
+          <div className="auth-header">
+            <div className="auth-logo">
+              <Gamepad2 size={36} color="#ec4899" />
+            </div>
+            <h2>Join the Squad!</h2>
+            <p>Buat akun baru dan nikmati kemudahan top up</p>
+          </div>
 
-      <div style={{ display: "flex", flexDirection: "column", width: "300px", gap: "10px" }}>
+          <form onSubmit={handleRegister} className="auth-form">
+            <div className="input-group">
+              <User className="input-icon" size={20} />
+              <input
+                type="text"
+                className="custom-input"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
 
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+            <div className="input-group">
+              <Mail className="input-icon" size={20} />
+              <input
+                type="email"
+                className="custom-input"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+            <div className="input-group">
+              <Lock className="input-icon" size={20} />
+              <input
+                type="password"
+                className="custom-input"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+            <button 
+              type="submit" 
+              className={`btn-auth ${isLoading ? "loading" : ""}`}
+              disabled={isLoading}
+            >
+              {isLoading ? "Mendaftar..." : (
+                <>
+                  <UserPlus size={20} /> Register
+                </>
+              )}
+            </button>
+          </form>
 
-        <button onClick={handleRegister}>
-          Register
-        </button>
+          <div className="auth-footer">
+            <p>
+              Sudah punya akun? <Link to="/login" className="auth-link">Login di sini</Link>
+            </p>
+          </div>
 
+        </div>
       </div>
     </div>
   );
