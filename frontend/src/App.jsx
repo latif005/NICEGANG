@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Checkout from "./pages/Checkout";
 import Success from "./pages/Success";
 import History from "./pages/History";
+import Profile from "./pages/Profile";
 
 // admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -33,6 +34,7 @@ function Layout() {
         <Route path="/history" element={<History />} />
         <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/success/:id" element={<Success />} />
+        <Route path="/profile" element={<Profile />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<AdminDashboard />} />
