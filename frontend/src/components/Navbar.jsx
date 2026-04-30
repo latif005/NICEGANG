@@ -1,12 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { Search, Home as HomeIcon, Clock, User, LogOut, ChevronDown,LayoutDashboard } from "lucide-react";
+import "../App.css"; // Impor file CSS
 
 function Navbar() {
-
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
-
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Menutup dropdown jika user klik di luar area menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -16,88 +28,89 @@ function Navbar() {
   };
 
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: "space-between",
-      padding: "15px 30px",
-      background: "#111",
-      color: "white"
-    }}>
+    <header className="site-header">
+      <div className="header-container">
 
-      {/* Left */}
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Link to="/" style={{ color: "white" }}>Home</Link>
+        {/* Left: Logo & Nav Links */}
+        <div className="header-left">
+          <Link to="/" className="site-logo">TIP TOP UP</Link>
 
-        {user && (
-          <Link to="/history" style={{ color: "white" }}>
-            History
-          </Link>
-        )}
-      </div>
-
-      {/* Right */}
-      <div>
-
-        {!user ? (
-            <div style={{ display: "flex", gap: "10px" }}>
-                <Link to="/login">
-                <button>Login</button>
-                </Link>
-
-                <Link to="/register">
-                <button>Register</button>
-                </Link>
-            </div>
-        ) : (
-          <div style={{ position: "relative" }}>
-
-            {/* Avatar */}
-            <div
-              onClick={() => setOpen(!open)}
-              style={{
-                width: "35px",
-                height: "35px",
-                borderRadius: "50%",
-                background: "#555",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer"
-              }}
-            >
-              👤
-            </div>
-
-            {/* Dropdown */}
-            {open && (
-              <div style={{
-                position: "absolute",
-                right: 0,
-                top: "45px",
-                background: "white",
-                color: "black",
-                borderRadius: "5px",
-                padding: "10px",
-                minWidth: "120px"
-              }}>
-                <p>{user.username}</p>
-                <hr />
-                <button onClick={() => navigate("/profile")}>
-                  Profile
-                </button>
-                <br />
-                <button onClick={handleLogout}>
-                  Logout
-                </button>
-              </div>
+          <nav className="main-nav">
+            <Link to="/" className="nav-item">
+              <HomeIcon size={18} /> Home
+            </Link>
+            {user && (
+              <Link to="/history" className="nav-item">
+                <Clock size={18} /> History
+              </Link>
             )}
+          </nav>
+        </div>
 
+        {/* Center: Search Bar */}
+        <div className="search-section">
+          <div className="search-bar">
+            <Search className="search-icon" size={20} />
+            <input type="text" placeholder="Search for games.." />
           </div>
-        )}
+        </div>
+
+        {/* Right: Auth / Profile */}
+        <div className="auth-section">
+          {!user ? (
+            <div className="auth-buttons">
+              <Link to="/login" className="btn-login">Login</Link>
+              <Link to="/register" className="btn-register">Register</Link>
+            </div>
+          ) : (
+            <div className="user-menu-container" ref={dropdownRef}>
+
+              {/* Avatar Trigger */}
+              <div className="user-avatar" onClick={() => setOpen(!open)}>
+                <div className="avatar-circle">
+                  <User size={18} color="#fff" />
+                </div>
+                {/* <span className="username">{user.username}</span> */}
+                {/* <ChevronDown size={16} className={`chevron ${open ? "rotate" : ""}`} /> */}
+              </div>
+
+              {/* Dropdown Menu */}
+              {open && (
+                <div className="dropdown-menu">
+                  <div className="dropdown-header">
+                    <p className="dropdown-title">Logged in as</p>
+                    <p className="dropdown-name">{user.username}</p>
+                  </div>
+                  <div className="dropdown-divider"></div>
+
+                  {/* FITUR KHUSUS ADMIN: Cek role user */}
+                  {user.role === 'admin' && (
+                    <button
+                      className="dropdown-item admin-link"
+                      onClick={() => { setOpen(false); navigate("/admin"); }}
+                    >
+                      <LayoutDashboard size={16} style={{ color: '#ec4899' }} /> Dashboard Admin
+                    </button>
+                  )}
+
+                  <button
+                    className="dropdown-item"
+                    onClick={() => { setOpen(false); navigate("/profile"); }}
+                  >
+                    <User size={16} /> Profile
+                  </button>
+
+                  <button className="dropdown-item logout" onClick={handleLogout}>
+                    <LogOut size={16} /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
       </div>
-
-    </div>
+    </header>
   );
 }
 
