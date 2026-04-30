@@ -110,7 +110,7 @@ exports.createPayment = (req, res) => {
 
         const parameter = {
             transaction_details: {
-                order_id: order.id,
+                order_id: order.id.toString(),
                 gross_amount: order.total_price
             }
         };
