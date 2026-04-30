@@ -39,3 +39,23 @@ exports.deleteUser = (req, res) => {
     }
   );
 };
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const userId = req.user.id; // Ambil ID dari token yang udah di-verify
+        const { username } = req.body;
+
+        if (!username) {
+            return res.status(400).json({ message: "Username wajib terisi!" });
+        }
+
+        const sql = "UPDATE users SET username = ? WHERE id = ?";
+        // Pake .promise() biar gak kena error 'not a promise' lagi
+        await db.promise().query(sql, [username, userId]);
+
+        res.json({ success: true, message: "Username berhasil diganti!", username });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Backend-nya lagi kocak, gagal update profil" });
+    }
+};

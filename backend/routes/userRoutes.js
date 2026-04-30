@@ -8,5 +8,6 @@ const roleMiddleware = require("../middleware/roleMiddleware");
 router.get("/users", verifyToken, roleMiddleware, userController.getUsers);
 router.put("/users/:id", verifyToken, roleMiddleware, userController.updateUserRole);
 router.delete("/users/:id", verifyToken, roleMiddleware, userController.deleteUser);
+router.put('/profile', verifyToken, userController.updateProfile);
 
 module.exports = router;
