@@ -85,7 +85,7 @@ function Success() {
                     </div>
 
                     <div className="thank-you-note">
-                        <p>Terima kasih telah mempercayakan top up di GGWP 🙏</p>
+                        <p>Terima kasih telah mempercayakan top up di TIP TOP UP 🙏</p>
                     </div>
 
                     {/* Tombol Aksi */}

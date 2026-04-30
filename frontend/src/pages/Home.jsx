@@ -79,7 +79,7 @@ function Home() {
       </main>
 
       {/* 4. Floating Contact Button (WhatsApp) */}
-      <a href="https://wa.me/081285976653" className="whatsapp-float" target="_blank" rel="noopener noreferrer">
+      <a href="https://wa.me/6281285976653" className="whatsapp-float" target="_blank" rel="noopener noreferrer">
         <MessageCircle size={30} color="white" />
       </a>
     </div>
