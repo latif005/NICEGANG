@@ -13,51 +13,50 @@ exports.getGames = (req, res) => {
 };
 
 //buat crud game
-exports.createGame = (req, res) => {
-  console.log(req.body);
+exports.createGame = async (req, res) => {
+    try {
+        const { name, currency } = req.body;
+        
+        // 1. Tangkap URL gambarnya dari req.file
+        let imageUrl = null;
+        if (req.file) {
+            imageUrl = `http://localhost:5000/uploads/${req.file.filename}`; 
+        } else {
+            return res.status(400).json({ message: "Gambar wajib diupload!" });
+        }
 
-  const { name, image, currency } = req.body;
+        const sql = "INSERT INTO games (name, image, currency) VALUES (?, ?, ?)";
+        await db.promise().query(sql, [name, imageUrl, currency]);
 
-  const sql = `
-    INSERT INTO games (name, image, currency)
-    VALUES (?, ?, ?)
-  `;
-
-  db.query(sql, [name, image, currency], (err, result) => {
-
-    if (err) {
-    console.log("CREATE GAME ERROR:", err);
-    return res.status(500).json(err);
-}
-
-    res.json({
-      message: "Game created",
-      id: result.insertId
-    });
-
-  });
-
+        res.status(201).json({ 
+          message: "Game berhasil ditambahkan!" , 
+          image: imageUrl});
+        
+    } catch (error) {
+        console.error("Error saat nambah game:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 };
 
-exports.updateGame = (req, res) => {
+exports.updateGame = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, currency } = req.body;
+        let imageUrl = req.body.image; // default pake URL lama kalau gak upload baru
 
-  const { id } = req.params;
-  const { name, image, currency } = req.body;
+        // Kalau user upload file baru pas edit
+        if (req.file) {
+            imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+        }
 
-  const sql = `
-    UPDATE games
-    SET name=?, image=?, currency=?
-    WHERE id=?
-  `;
+        const sql = "UPDATE games SET name = ?, image = ?, currency = ? WHERE id = ?";
+        await db.promise().query(sql, [name, imageUrl, currency, id]);
 
-  db.query(sql, [name, image, currency, id], (err) => {
-
-    if (err) return res.status(500).json(err);
-
-    res.json({ message: "Game updated" });
-
-  });
-
+        res.json({ message: "Update sukses!", image: imageUrl });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Gagal update database" });
+    }
 };
 
 exports.deleteGame = (req, res) => {
