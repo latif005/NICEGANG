@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import API from "../services/Api";
+import API from "../services/api";
 import { User, Mail, Lock, UserPlus, Gamepad2 } from "lucide-react";
 import "../App.css"; // Impor file CSS
 

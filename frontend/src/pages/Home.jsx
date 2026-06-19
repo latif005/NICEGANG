@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../services/Api";
+import API from "../services/api";
 import GameCard from "../components/GameCard";
 import "../App.css"; // Pastikan file CSS ini di-import
 // Impor ikon (pastikan Anda menginstal lucide-react atau pustaka ikon lainnya)

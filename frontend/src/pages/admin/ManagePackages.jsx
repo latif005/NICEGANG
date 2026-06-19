@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../../services/Api";
+import API from "../../services/api";
 import AdminSidebar from "../../components/AdminSidebar";
 import { 
     Gamepad2, Layers, DollarSign, Plus, 

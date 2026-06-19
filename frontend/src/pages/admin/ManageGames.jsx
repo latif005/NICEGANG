@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../../services/Api";
+import API from "../../services/api";
 import AdminSidebar from "../../components/AdminSidebar";
 import { Plus, Pencil, Trash2, Save, X, Gamepad2, Image as ImageIcon, Coins } from "lucide-react";
 import "../../App.css"; // Impor file CSS

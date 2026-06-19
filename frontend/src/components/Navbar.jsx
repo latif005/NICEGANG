@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { Search, Home as HomeIcon, Clock, User, LogOut, ChevronDown,LayoutDashboard } from "lucide-react";
+import { useAuth } from "../context/AuthContext"; // Pakai Context
 import "../App.css"; // Impor file CSS
 
 function Navbar() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user, logout } = useAuth(); // Ambil dari Context, bukan localStorage
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -21,10 +22,8 @@ function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    logout(); // Pakai fungsi logout dari Context
     navigate("/");
-    window.location.reload();
   };
 
   return (
@@ -70,8 +69,6 @@ function Navbar() {
                 <div className="avatar-circle">
                   <User size={18} color="#fff" />
                 </div>
-                {/* <span className="username">{user.username}</span> */}
-                {/* <ChevronDown size={16} className={`chevron ${open ? "rotate" : ""}`} /> */}
               </div>
 
               {/* Dropdown Menu */}

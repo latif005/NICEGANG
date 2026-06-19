@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import API from "../services/Api"; // Sesuaikan path jika berbeda
+import API from "../services/api"; // Fix: lowercase
+import { useAuth } from "../context/AuthContext"; // Pakai Context
 import "../App.css"; // Jangan lupa import CSS-nya
 
 function History() {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // 1. Ambil data user dari localStorage buat dapetin ID-nya
-  const user = JSON.parse(localStorage.getItem("user"));
+  // Ambil data user dari Context (bukan localStorage)
+  const { user } = useAuth();
 
   useEffect(() => {
     // Kalau nggak ada user login, nggak usah fetch data
