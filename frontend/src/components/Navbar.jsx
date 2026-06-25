@@ -1,13 +1,8 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-<<<<<<< HEAD
-import { Search, Home as HomeIcon, Clock, User, LogOut, LayoutDashboard } from "lucide-react";
-import "../App.css";
-=======
 import { Search, Home as HomeIcon, Clock, User, LogOut, ChevronDown,LayoutDashboard } from "lucide-react";
 import { useAuth } from "../context/AuthContext"; // Pakai Context
 import "../App.css"; // Impor file CSS
->>>>>>> aa42d48cc5fb91e25c4f52adfeb4630e98c64b03
 
 function Navbar() {
   const { user, logout } = useAuth(); // Ambil dari Context, bukan localStorage
