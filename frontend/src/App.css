@@ -1,11 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #0b011d; /* Warna background ungu gelap */
   color: #fff;
   overflow-x: hidden;
@@ -132,11 +134,14 @@ body {
 .hero-content {
   display: flex;
   align-items: center;
-  gap: 40px;
+  justify-content: space-between;
+  gap: 30px;
+  width: 100%;
 }
 
 .hero-text-area {
-  flex: 1;
+  flex: 1; /* Mengambil setengah bagian */
+  min-width: 300px;
 }
 
 .brand-logo-large {
@@ -168,54 +173,39 @@ body {
 }
 
 .hero-banner-card {
-  background: linear-gradient(135deg, #1a0433 0%, #33155b 100%);
+  flex: 1; /* Mengambil setengah bagian sisanya */
+  min-width: 300px; /* Biar gak kekecilan saat layar menyusut */
   border-radius: 20px;
-  overflow: hidden; /* Biar gambar yang keluar batas kepotong rapi */
-  position: relative;
-  min-height: 300px;
+  overflow: hidden; /* Tetap pertahankan biar border-radius-nya rapi */
+  background: none;
 }
 
 .hero-content-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 40px;
-  height: 100%;
-}
-
-.hero-text-section {
-  flex: 1;
-  z-index: 2; /* Biar teks di depan gambar kalau tumpukan */
+  display: block;
+  padding: 0;
+  width: 100%;
 }
 
 .hero-image-section {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  position: relative;
+  width: 100%;
+  line-height: 0;
 }
 
+/* KUNCI UTAMA: Memaksa gambar menyesuaikan lebar container-nya */
 .hero-character-img {
   width: 100%;
-  max-width: 450px; /* Atur ukuran maksimal karakter */
   height: auto;
-  object-fit: contain;
-  /* Efek melayang dan keluar sedikit dari card biar keren */
-  transform: scale(1.2) translateY(10px); 
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+  display: block;
+  object-fit: contain; /* Memastikan seluruh gambar masuk tanpa terpotong */
 }
 
-/* Responsif buat HP */
+/* Tambahan Biar Responsif di HP */
 @media (max-width: 768px) {
-  .hero-content-wrapper {
-    flex-direction: column;
+  .hero-content {
+    flex-direction: column; /* Kalau dibuka di HP, teks di atas, gambar di bawah */
     text-align: center;
   }
-  .hero-character-img {
-    display: none; /* Sembunyiin di HP biar gak sempit */
-  }
 }
-
 .placeholder-banner {
   border-radius: 12px;
   position: relative;
@@ -310,6 +300,8 @@ body {
   object-fit: cover; /* Pastikan gambar karakter mengisi container */
 }
 
+
+
 /* =========================================
    4. Floating Button
    ========================================= */
@@ -332,6 +324,7 @@ body {
 .whatsapp-float:hover {
   transform: scale(1.1);
 }
+
 
 
 /* Navbar Base Container */
@@ -2167,8 +2160,37 @@ body {
 }
 
 .input-with-icon {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute !important;
+  left: 12px !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+}
+
+.admin-input {
+  width: 100% !important;
+  padding-left: 42px !important; 
+  /* Angka ini wajib lebih besar dari ukuran icon (18) + left (12) */
+    background-color: #0b011d;
+  border: 1px solid #3d1b70;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* .input-with-icon {
   position: relative;
-  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .input-icon {
@@ -2190,7 +2212,7 @@ body {
   outline: none;
   transition: all 0.3s ease;
   box-sizing: border-box;
-}
+} */
 
 .admin-input:focus {
   border-color: #8b5cf6;
@@ -3404,4 +3426,82 @@ body {
 .btn-save-profile:hover {
     box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
     transform: scale(1.02);
+}
+
+/* --- RESPONSIVE MOBILE FIX --- */
+@media (max-width: 768px) {
+  /* 1. Paksa container membungkus ke bawah (wrap) */
+  .header-container {
+    padding: 10px 20px;
+    flex-wrap: wrap;
+    gap: 15px; /* Kurangi jarak antar elemen di HP */
+  }
+
+  /* 2. Sembunyikan Nav Item teks (Home & History) biar gak menabrak */
+  .main-nav {
+    display: none; 
+  }
+
+  /* 3. Paksa Search Section mengambil baris baru penuh di bawah Logo & Avatar */
+  .search-section {
+    order: 3; /* Pindah ke baris paling bawah */
+    flex-grow: 1;
+    width: 100%;
+    max-width: none; /* Hilangkan batas 500px di HP */
+  }
+
+  /* 4. Sesuaikan padding container kiri */
+  .header-left {
+    gap: 0;
+  }
+  
+  /* 5. Sedikit perkecil ukuran logo agar space di HP lebih lega */
+  .site-logo {
+    font-size: 20px;
+  }
+
+  /* 6. Atur tombol auth / login jika belum login agar tidak memakan tempat */
+  .auth-buttons {
+    gap: 10px;
+  }
+  .btn-register {
+    padding: 6px 15px;
+    font-size: 14px;
+  }
+}
+
+/* Sembunyikan item mobile-only saat di komputer desktop */
+.mobile-only-item, .mobile-nav-item {
+  display: none !important;
+}
+
+/* --- UPDATE DI DALAM MEDIA QUERY KAMU --- */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 10px 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .main-nav {
+    display: none !important; /* Sembunyikan navbar utama kiri */
+  }
+
+  .search-section {
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
+  /* Munculkan kembali item khusus mobile di dalam dropdown */
+  .dropdown-menu .mobile-only-item {
+    display: flex !important;
+  }
+
+  /* Jika user BELUM login, munculkan tombol Home kecil di samping tombol Login */
+  .mobile-nav-item {
+    display: flex !important;
+    color: rgba(255, 255, 255, 0.7);
+    margin-right: 5px;
+  }
 }

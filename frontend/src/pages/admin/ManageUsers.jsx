@@ -9,7 +9,12 @@ function ManageUsers() {
 
     const fetchUsers = () => {
         API.get("/users")
-            .then(res => setUsers(res.data))
+            // .then(res => setUsers(res.data))
+            .then(res => {
+                console.log("Data dari API:", res.data);
+                // Kalau datanya dibungkus objek 'data', ganti jadi: setUsers(res.data.data)
+                setUsers(res.data);
+            })
             .catch(err => console.error(err));
     };
 
@@ -60,7 +65,7 @@ function ManageUsers() {
                     <div className="card-header-simple">
                         <h2><Users size={20} /> Daftar Pengguna Terdaftar</h2>
                     </div>
-                    
+
                     <div className="table-responsive">
                         <table className="admin-table">
                             <thead>
@@ -77,7 +82,7 @@ function ManageUsers() {
                                 {users.length > 0 ? users.map(user => (
                                     <tr key={user.id}>
                                         <td className="id-cell">#{user.id}</td>
-                                        
+
                                         <td className="user-info-cell">
                                             <div className="user-profile">
                                                 <div className="user-avatar">
@@ -111,9 +116,9 @@ function ManageUsers() {
 
                                         <td className="action-cell text-center">
                                             <div className="action-buttons">
-                                                <button 
-                                                    onClick={() => handleDelete(user.id)} 
-                                                    className="btn-action btn-delete" 
+                                                <button
+                                                    onClick={() => handleDelete(user.id)}
+                                                    className="btn-action btn-delete"
                                                     title="Hapus User"
                                                 >
                                                     <Trash2 size={16} />

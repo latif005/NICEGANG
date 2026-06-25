@@ -116,7 +116,7 @@ function ManagePackages() {
                                 setEditId(null); // Reset edit state saat ganti game
                             }}
                         >
-                            <option value="">-- Pilih Game Terlebih Dahulu --</option>
+                            <option value="">Pilih Game Terlebih Dahulu</option>
                             {games.map(g => (
                                 <option key={g.id} value={g.id}>
                                     {g.name}

@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom"; // Tambahkan ini untuk membaca URL
 import API from "../services/Api";
 import GameCard from "../components/GameCard";
-import "../App.css"; // Pastikan file CSS ini di-import
-// Impor ikon (pastikan Anda menginstal lucide-react atau pustaka ikon lainnya)
-import { Search, Home as HomeIcon, ReceiptText, Zap, MessageCircle } from "lucide-react";
+import "../App.css";
+import { MessageCircle, Search } from "lucide-react";
+
 
 function Home() {
   const [games, setGames] = useState([]);
+
+  // Ambil search parameter dari URL yang diketik di Navbar
+  const [searchParams] = useSearchParams();
+  const searchTerm = searchParams.get("search") || "";
 
   useEffect(() => {
     API.get("/games")
@@ -14,36 +19,33 @@ function Home() {
       .catch((err) => console.error(err));
   }, []);
 
+  // Filter game berdasarkan apa yang tertulis di URL parameter
+  const filteredGames = games.filter((game) =>
+    game.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="main-wrapper">
-      {/* 1. Header Navigation */}
-
-
-      {/* 2. Hero Section */}
+      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-container">
           <div className="hero-content">
             <div className="hero-text-area">
-              <div className="brand-logo-large">TIP TOP UP</div>
+              {/* <div className="brand-logo-large">
+                
+              </div> */}
               <h1 className="hero-title">
-                TIP TOP UP – Website Top Up Game Termurah dan Terpercaya
+                Website Top Up Game Termurah dan Terpercaya
               </h1>
               <p className="hero-subtitle">
                 TIP Top Up, solusi top up game termurah, tercepat, dan terpercaya di Indonesia.
-                Proses instan &lt;1 menit, metode pembayaran lengkap, dan promo menarik setiap hari
+                Proses instan, metode pembayaran lengkap, dan promo menarik setiap hari
               </p>
             </div>
 
             <div className="hero-banner-card">
-              {/* Bungkus konten biar bisa di-flex */}
               <div className="hero-content-wrapper">
-
-                <div className="hero-text-section">
-                  <h1 className="hero-title">GAS RANK TANPA REM</h1>
-                  <p className="hero-subtitle">HARGA LEBIH HEMAT, PROSES LEBIH CEPAT</p>
-                </div>
                 <div className="hero-image-section">
-                  {/* Ganti src sesuai nama file gambar lu */}
                   <img src="../../public/uploads/poster.png" alt="Hero Character" className="hero-character-img" />
                 </div>
               </div>
@@ -52,33 +54,46 @@ function Home() {
         </div>
       </section>
 
-      {/* 3. Game List Section */}
+      {/* Game List Section */}
       <main className="game-section">
         <div className="section-container">
           <div className="section-header">
-            <h2>🔥 Paling Laris</h2>
+            {searchTerm ? (
+              <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Search size={22} style={{ color: '#ec4899' }} />
+                <span>Hasil Pencarian: "{searchTerm}"</span>
+              </h2>
+            ) : (
+              <h2> </h2>
+            )}
           </div>
 
           <div className="game-grid">
-            {games.map((game) => (
+            {/* Render dari filteredGames */}
+            {filteredGames.map((game) => (
               <GameCard key={game.id} game={game} />
             ))}
 
-            {/* Dummy data untuk visualisasi jika API belum siap */}
+            {/* Jika hasil filter kosong padahal data API ada */}
+            {filteredGames.length === 0 && games.length > 0 && (
+              <p style={{ gridColumn: '1/-1', textAlign: 'center', color: '#888', padding: '40px 0' }}>
+                Game dengan nama "{searchTerm}" tidak ditemukan.
+              </p>
+            )}
+
+            {/* Dummy data jika API belum siap / kosong */}
             {games.length === 0 && Array(5).fill(0).map((_, i) => (
               <div className="dummy-card" key={i}>
                 <div className="dummy-img">
-                  {/* Gunakan gambar karakter dari referensi */}
                   <img src={`https://path-to-your-game-character-image-${i + 1}.jpg`} alt="Game Character" />
                 </div>
-                {/* Komponen GameCard asli Anda akan me-render konten di sini */}
               </div>
             ))}
           </div>
         </div>
       </main>
 
-      {/* 4. Floating Contact Button (WhatsApp) */}
+      {/* Floating Contact Button (WhatsApp) */}
       <a href="https://wa.me/6281285976653" className="whatsapp-float" target="_blank" rel="noopener noreferrer">
         <MessageCircle size={30} color="white" />
       </a>
