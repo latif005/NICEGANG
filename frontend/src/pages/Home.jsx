@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { Link, useSearchParams } from "react-router-dom"; // Tambahkan ini untuk membaca URL
 import API from "../services/Api";
+=======
+import API from "../services/api";
+>>>>>>> aa42d48cc5fb91e25c4f52adfeb4630e98c64b03
 import GameCard from "../components/GameCard";
 import "../App.css";
 import { MessageCircle, Search } from "lucide-react";

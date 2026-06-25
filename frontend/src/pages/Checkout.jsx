@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "../services/Api";
+import API from "../services/api";
 import { Receipt, Gamepad2, Package, Wallet, ShieldCheck, CreditCard } from "lucide-react";
 import "../App.css"; // Impor CSS
 

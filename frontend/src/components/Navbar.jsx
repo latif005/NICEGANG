@@ -1,10 +1,16 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+<<<<<<< HEAD
 import { Search, Home as HomeIcon, Clock, User, LogOut, LayoutDashboard } from "lucide-react";
 import "../App.css";
+=======
+import { Search, Home as HomeIcon, Clock, User, LogOut, ChevronDown,LayoutDashboard } from "lucide-react";
+import { useAuth } from "../context/AuthContext"; // Pakai Context
+import "../App.css"; // Impor file CSS
+>>>>>>> aa42d48cc5fb91e25c4f52adfeb4630e98c64b03
 
 function Navbar() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user, logout } = useAuth(); // Ambil dari Context, bukan localStorage
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -24,10 +30,8 @@ function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    logout(); // Pakai fungsi logout dari Context
     navigate("/");
-    window.location.reload();
   };
 
   const handleSearchChange = (e) => {

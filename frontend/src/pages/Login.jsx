@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import API from "../services/Api";
+import API from "../services/api";
+import { useAuth } from "../context/AuthContext"; // Pakai Context
 import { Mail, Lock, LogIn, Gamepad2 } from "lucide-react";
 import "../App.css"; // Impor file CSS
 
@@ -9,6 +10,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { login } = useAuth(); // Ambil fungsi login dari Context
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -21,13 +23,11 @@ function Login() {
         password
       });
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      // Simpan ke Context (otomatis simpan ke localStorage juga)
+      login(res.data.user, res.data.token);
 
       alert("Login berhasil");
-      
-      // Menggunakan reload agar Navbar langsung mendeteksi user yang baru login
-      window.location.href = "/"; 
+      navigate("/"); // Navbar langsung update tanpa reload!
 
     } catch (err) {
       console.error(err);

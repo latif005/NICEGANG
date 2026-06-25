@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../../services/Api";
+import API from "../../services/api";
 import AdminSidebar from "../../components/AdminSidebar";
 import { Users, Trash2, User as UserIcon, Mail, ShieldAlert } from "lucide-react";
 import "../../App.css"; // Impor file CSS

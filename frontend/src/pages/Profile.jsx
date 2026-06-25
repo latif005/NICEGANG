@@ -1,23 +1,20 @@
 import { useState } from "react";
 import { User, Mail, ShieldCheck, Save, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // Pakai Context
 import "../App.css";
 
 function Profile() {
     const navigate = useNavigate();
-    // Ambil data user dari localStorage yang disimpen pas login
-    const user = JSON.parse(localStorage.getItem("user"));
+    const { user, updateUser } = useAuth(); // Ambil dari Context
     
     // State buat handle perubahan username
     const [username, setUsername] = useState(user?.username || "");
 
     const handleUpdate = async () => {
         try {
-            const updatedUser = { ...user, username: username };
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-            
+            updateUser({ username: username }); // Update via Context
             alert("Username berhasil diganti!");
-            window.location.reload(); 
         } catch (error) {
             alert("Gagal update profil");
         }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "../services/Api";
+import API from "../services/api"; // Fix: lowercase
+import { useAuth } from "../context/AuthContext"; // Pakai Context
 import { User, Package, Ticket, ShoppingCart, CheckCircle2 } from "lucide-react";
 import "../App.css"; // Impor file CSS
 
@@ -11,6 +12,7 @@ function GameDetail() {
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [promoCode, setPromoCode] = useState("");
   const navigate = useNavigate();
+  const { user } = useAuth(); // Ambil dari Context
 
   useEffect(() => {
     API.get(`/packages/${id}`)
@@ -19,7 +21,6 @@ function GameDetail() {
   }, [id]);
 
   const handleTopUp = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
       alert("Silakan login dulu");

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import API from "../../services/Api";
+import API from "../../services/api"; // Fix: lowercase
 import AdminSidebar from "../../components/AdminSidebar";
+import { useAuth } from "../../context/AuthContext"; // Pakai Context
 import { Users, ShoppingBag, Wallet, ShieldAlert, Activity } from "lucide-react";
 import "../../App.css"; // Impor file CSS
 
@@ -9,7 +10,7 @@ function AdminDashboard() {
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const { user } = useAuth(); // Ambil dari Context
 
     useEffect(() => {
         // Ambil data stats dan orders secara bersamaan

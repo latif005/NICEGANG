@@ -16,6 +16,10 @@ import ManagePackages from "./pages/admin/ManagePackages";
 import ManagePromos from "./pages/admin/ManagePromos";
 import ManageUsers from "./pages/admin/ManageUsers";
 
+// Proteksi Route
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
+
 function Layout() {
   const location = useLocation();
 
@@ -27,21 +31,24 @@ function Layout() {
       {!isAdmin && <Navbar />}
 
       <Routes>
+        {/* PUBLIC — Bisa diakses siapa saja */}
         <Route path="/" element={<Home />} />
         <Route path="/game/:id" element={<GameDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/checkout/:id" element={<Checkout />} />
-        <Route path="/success/:id" element={<Success />} />
-        <Route path="/profile" element={<Profile />} />
 
-        {/* ADMIN */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/games" element={<ManageGames />} />
-        <Route path="/admin/packages" element={<ManagePackages />} />
-        <Route path="/admin/promos" element={<ManagePromos />} />
-        <Route path="/admin/users" element={<ManageUsers />} />
+        {/* PROTECTED — Harus login dulu */}
+        <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+        <Route path="/checkout/:id" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/success/:id" element={<ProtectedRoute><Success /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+
+        {/* ADMIN — Harus login + role admin */}
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+        <Route path="/admin/games" element={<AdminRoute><ManageGames /></AdminRoute>} />
+        <Route path="/admin/packages" element={<AdminRoute><ManagePackages /></AdminRoute>} />
+        <Route path="/admin/promos" element={<AdminRoute><ManagePromos /></AdminRoute>} />
+        <Route path="/admin/users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
       </Routes>
     </>
   );
