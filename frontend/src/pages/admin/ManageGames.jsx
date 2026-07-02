@@ -111,12 +111,14 @@ function ManageGames() {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Yakin ingin menghapus game ini?")) {
+        if (window.confirm("Yakin ingin menghapus game ini? Semua paket dan transaksi terkait game ini akan ikut terhapus.")) {
             try {
                 await API.delete(`/games/${id}`);
+                alert("Game berhasil dihapus!");
                 fetchGames();
             } catch (error) {
                 console.error("Gagal menghapus game", error);
+                alert("Gagal menghapus game: " + (error.response?.data?.message || error.message));
             }
         }
     };
@@ -151,7 +153,7 @@ function ManageGames() {
             alert("Game berhasil diupdate!");
         } catch (error) {
             console.error("Gagal mengupdate game", error);
-            alert("Gagal mengupdate game");
+            alert("Gagal mengupdate game: " + (error.response?.data?.message || error.message));
         }
     };
 

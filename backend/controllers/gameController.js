@@ -55,7 +55,7 @@ exports.updateGame = async (req, res) => {
         res.json({ message: "Update sukses!", image: imageUrl });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Gagal update database" });
+        res.status(500).json({ message: "Gagal update database: " + error.message });
     }
 };
 
