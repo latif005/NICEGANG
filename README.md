@@ -87,17 +87,19 @@ Proyek ini merupakan hasil pengembangan dari tim **NICEGANG** untuk mata kuliah 
 4. Buka Aplikasi
    Buka browser dan akses aplikasi melalui URL lokal yang diberikan oleh Vite (biasanya berjalan di http://localhost:5173).
 
+
 👥 Tim Pengembang (NICEGANG)
+
 Dosen Pengampu: Akhmad Arip, S.Kom.
 
-Umar Al Faruq (0110224093) - Product Owner
+Umar Al Faruq (0110224093) 
 
-Adinda Angesti Chandra (0110224052) - Scrum Master
+Adinda Angesti Chandra (0110224052) 
 
-Angeliq Mexgaputri Prameswari (0110224217) - Team Dev
+Angeliq Mexgaputri Prameswari (0110224217) 
 
-Autum Zebtotanel (0110224058) - Team Dev
+Autum Zebtotanel (0110224058) 
 
-Latif Wibowo (0110224065) - Team Dev
+Latif Wibowo (0110224065) 
 
 © 2026 STT Terpadu Nurul Fikri - Program Studi Teknik Informatika
