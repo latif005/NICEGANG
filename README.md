@@ -54,30 +54,31 @@ Proyek ini merupakan hasil pengembangan dari tim **NICEGANG** untuk mata kuliah 
    git clone [https://github.com/umaralf246/repo-tiptopup.git](https://github.com/umaralf246/repo-tiptopup.git)
    cd repo-tiptopup
 
-Setup Backend (Server)
 
-Bash
+2. Setup Backend (Server)
+
 cd backend
 npm install
-Buat database MySQL baru (misalnya: tiptopup_db).
 
-Salin file konfigurasi environment dari .env.example menjadi .env lalu atur kredensial koneksi database (Host, User, Password, Database).
+- Buat database MySQL baru (misalnya: tiptopup_db).
 
-Import struktur database / jalankan file migrasi .sql yang tersedia.
+- Salin file konfigurasi environment dari .env.example menjadi .env lalu atur kredensial koneksi database (Host, User, Password, Database).
 
-Jalankan server backend:
+- Import struktur database / jalankan file migrasi .sql yang tersedia.
 
-Bash
+- Jalankan server backend:
+
 npm run dev
-# atau node index.js
-Setup Frontend (Client)
+//atau node index.js
+
+3. Setup Frontend (Client)
 Buka terminal/command prompt baru dan jalankan:
 
-Bash
 cd frontend
 npm install
 npm run dev
-Buka Aplikasi
+
+4. Buka Aplikasi
 Buka browser dan akses aplikasi melalui URL lokal yang diberikan oleh Vite (biasanya berjalan di http://localhost:5173).
 
 👥 Tim Pengembang (NICEGANG)
