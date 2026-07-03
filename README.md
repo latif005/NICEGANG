@@ -71,8 +71,7 @@ Proyek ini merupakan hasil pengembangan dari tim **NICEGANG** untuk mata kuliah 
    - Jalankan server backend:
 
    ```bash
-   npm run dev
-   //atau node index.js
+   npx nodemon app.js
    ```
 
 3. Setup Frontend (Client)
